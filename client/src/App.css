@@ -1,0 +1,12 @@
+.pokemon {
+    /* Split the screen */
+    display: inline-block;
+    width: 49vw;
+    height: 100vh;
+
+    text-align: center;
+}
+
+#pokemon1 {
+    border-right: 1px solid black;
+}
