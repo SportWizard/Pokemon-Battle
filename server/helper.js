@@ -6,6 +6,11 @@ require("dotenv").config();
 const USERNAME = process.env.USERNAME;
 const PASSWORD = process.env.PASSWORD;
 
+/*
+* Connect to database
+*
+* @returns {mysql.Connection} the connection to the database
+*/
 function connectToDatabase() {
     let connection = mysql.createConnection({
         host: "localhost",
@@ -23,6 +28,9 @@ function connectToDatabase() {
     return connection;
 }
 
+/*
+* Close the connection to the database
+*/
 function closeConnection(connection) {
     if (connection) {
         connection.end((err) => {
