@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 require("dotenv").config();
 
@@ -15,7 +15,8 @@ function connectToDatabase() {
     let connection = mysql.createConnection({
         host: "localhost",
         user: USERNAME,
-        password: PASSWORD
+        password: PASSWORD,
+        database: "pokemon_data"
     });
 
     connection.connect((err) => {
