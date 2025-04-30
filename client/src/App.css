@@ -1,12 +1,29 @@
-.pokemon {
-    /* Split the screen */
-    display: inline-block;
-    width: 49vw;
-    height: 100vh;
-
-    text-align: center;
+:root {
+    --hpSize: 50%;
+    --hpRadius: 20px;
 }
 
-#pokemon1 {
-    border-right: 1px solid black;
+.selectBtn1,
+.selectBtn2 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hpBorder {
+    height: 20px;
+    width: var(--hpSize);
+    border: 1px solid black;
+    border-radius: var(--hpRadius);
+}
+
+.hp {
+    height: 100%;
+    border-radius: var(--hpRadius);
+    background-color: red;
+}
+
+.pokemon div span {
+    width: var(--hpSize);
+    float: right;
 }
