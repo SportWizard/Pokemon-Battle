@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import axios from "axios";
 
 import "./App.css";
 
 const URL = "http://localhost:8080";
-const POKEMONS = ["charizard", "bulbasaur", "mewtwo"];
 
 function App() {
     // Dynamic variables that changes over time
-    const [chosenPokemon1, setChosenPokemon1] = useState(POKEMONS[0]);
-    const [chosenPokemon2, setChosenPokemon2] = useState(POKEMONS[0]);
+    const [pokemons, setPokemons] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const [chosenPokemon1, setChosenPokemon1] = useState(pokemons[0]);
+    const [chosenPokemon2, setChosenPokemon2] = useState(pokemons[0]);
 
     const [pokemon1, setPokemon1] = useState(null);
     const [pokemon2, setPokemon2] = useState(null);
@@ -64,10 +66,34 @@ function App() {
         }
     };
 
+    // Get all the pokemons available from PokeAPI (useEffect works asynchronously. So that it can display loading and fetches the data)
+    useEffect(() => {
+        const getPokemons = async () => {
+            try {
+                const res = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=151");
+                let temp = [];
+
+                for (const pokedex of res.data["results"])
+                    temp.push(pokedex["name"]);
+
+                setPokemons(temp);
+                setLoading(false);
+            }
+            catch (err) {
+                console.error("Error:", err);
+            }
+        };
+
+        getPokemons();
+    }, []); // Empty array to make it run once instead of every render
+
+    if (loading)
+        return (<div>Loading...</div>);
+
     return (
         <>
             <select className="selectBtn1" onChange={(e) => { changePokemon(e, 1) }}>
-                {POKEMONS.map((pokemonName) => {
+                {pokemons.map((pokemonName) => {
                     return <option key={pokemonName}>{pokemonName}</option>
                 })}
             </select>
@@ -94,7 +120,7 @@ function App() {
             <br />
 
             <select className="selectBtn2" onChange={(e) => { changePokemon(e, 2) }}>
-                {POKEMONS.map((pokemonName) => {
+                {pokemons.map((pokemonName) => {
                     return <option key={pokemonName}>{pokemonName}</option>
                 })}
             </select>
