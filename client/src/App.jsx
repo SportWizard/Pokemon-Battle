@@ -1,18 +1,35 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import axios from "axios";
 
 import "./App.css";
 
 const URL = "http://localhost:8080";
+const POKEMONS = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
+    "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
+    "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata",
+    "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu",
+    "Sandshrew", "Sandslash", "Nidoran♀", "Nidorina", "Nidoqueen", "Nidoran♂",
+    "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales",
+    "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume",
+    "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth",
+    "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine",
+    "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop",
+    "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool",
+    "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke",
+    "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel",
+    "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar",
+    "Onix", "Dunsparce", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee",
+    "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey",
+    "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu",
+    "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electrode", "Voltorb", "Exeggutor",
+    "Mewtwo", "Mew"
+];
 
 function App() {
     // Dynamic variables that changes over time
-    const [pokemons, setPokemons] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    const [chosenPokemon1, setChosenPokemon1] = useState(pokemons[0]);
-    const [chosenPokemon2, setChosenPokemon2] = useState(pokemons[0]);
+    const [chosenPokemon1, setChosenPokemon1] = useState(POKEMONS[0]);
+    const [chosenPokemon2, setChosenPokemon2] = useState(POKEMONS[0]);
 
     const [pokemon1, setPokemon1] = useState(null);
     const [pokemon2, setPokemon2] = useState(null);
@@ -66,34 +83,10 @@ function App() {
         }
     };
 
-    // Get all the pokemons available from PokeAPI (useEffect works asynchronously. So that it can display loading and fetches the data)
-    useEffect(() => {
-        const getPokemons = async () => {
-            try {
-                const res = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=151");
-                let temp = [];
-
-                for (const pokedex of res.data["results"])
-                    temp.push(pokedex["name"]);
-
-                setPokemons(temp);
-                setLoading(false);
-            }
-            catch (err) {
-                console.error("Error:", err);
-            }
-        };
-
-        getPokemons();
-    }, []); // Empty array to make it run once instead of every render
-
-    if (loading)
-        return (<div>Loading...</div>);
-
     return (
         <>
             <select className="selectBtn1" onChange={(e) => { changePokemon(e, 1) }}>
-                {pokemons.map((pokemonName) => {
+                {POKEMONS.map((pokemonName) => {
                     return <option key={pokemonName}>{pokemonName}</option>
                 })}
             </select>
@@ -120,7 +113,7 @@ function App() {
             <br />
 
             <select className="selectBtn2" onChange={(e) => { changePokemon(e, 2) }}>
-                {pokemons.map((pokemonName) => {
+                {POKEMONS.map((pokemonName) => {
                     return <option key={pokemonName}>{pokemonName}</option>
                 })}
             </select>
