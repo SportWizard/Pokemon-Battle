@@ -25,18 +25,18 @@ export default class PokemonFacotry {
 
             for (let i = 0; i < 8 && i < moves.length; i++) {
                 const moveName = moves[i]["move"]["name"];
+                const moveApiInfo = await PokeAPI.getMoveFromApi(moveName); // Wait for API request
+
+                if (moveApiInfo == null)
+                    throw new Error("Error with information from external API request");
 
                 // Wait for query to finish and check if move's information is in the database
-                if (!(await pokemonDBManager.containsMove(moveName))) {
-                    const moveApiInfo = await PokeAPI.getMoveFromApi(moveName); // Wait for API request
-
-                    if (moveApiInfo == null)
-                        throw new Error("Error with information from external API request");
-
-                    // Insert move before "has" relationship, so that it doesn't cause an error that the foreign key doesn't exist
+                if (!(await pokemonDBManager.containsMove(moveName)))
                     pokemonDBManager.insertMove(moveApiInfo["id"], moveApiInfo["name"], moveApiInfo["power"], moveApiInfo["accuracy"]);
-                    pokemonDBManager.insertHas(pokemonApiInfo["id"], moveApiInfo["id"]);
-                }
+
+                // Connect pokemon with its moves whether move is in the database or not
+                // Because if pokemon is not in the database, then means there is no connection to the between the pokemon and the move
+                pokemonDBManager.insertHas(pokemonApiInfo["id"], moveApiInfo["id"]);
             }
         }
     }
