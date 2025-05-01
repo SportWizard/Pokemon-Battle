@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import axios from "axios";
 
 import "./App.css";
 
 const URL = "http://localhost:8080";
-const POKEMONS = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
+const POKEMONS = [
+    "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
     "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
     "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata",
     "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu",
@@ -22,9 +24,10 @@ const POKEMONS = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon"
     "Onix", "Dunsparce", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee",
     "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey",
     "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu",
-    "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electrode", "Voltorb", "Exeggutor",
-    "Mewtwo", "Mew"
+    "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electrode", "Voltorb", "Mewtwo", "Mew"
 ];
+
+let turn = 1;
 
 function App() {
     // Dynamic variables that changes over time
@@ -85,9 +88,10 @@ function App() {
 
     return (
         <>
+            {/* Display all 151 pokemon as an option */}
             <select className="selectBtn1" onChange={(e) => { changePokemon(e, 1) }}>
                 {POKEMONS.map((pokemonName) => {
-                    return <option key={pokemonName}>{pokemonName}</option>
+                    return <option key={uuidv4()}>{pokemonName}</option>
                 })}
             </select>
 
@@ -96,25 +100,28 @@ function App() {
             <button className="selectBtn1" onClick={() => { createPokemon(chosenPokemon1, 1) }}>Confirm</button>
 
             {/* Does not render if pokemon1 is null */}
-            {pokemon1 && <div className="pokemon" id="pokemon1">
-                <h1>{pokemon1["pokemonName"]}</h1>
+            {pokemon1 &&
+                <div className="pokemon" id="pokemon1">
+                    <h1>{pokemon1["pokemonName"]}</h1>
 
-                <div>
-                    HP
-                    <div className="hpBorder">
-                        <div className="hp" id="hp1" style={{ width: `${pokemon1Hp / pokemon1["pokemonHp"] * 100}%` }}></div>
+                    <div>
+                        HP
+                        <div className="hpBorder">
+                            <div className="hp" id="hp1" style={{ width: `${pokemon1Hp / pokemon1["pokemonHp"] * 100}%` }}></div>
+                        </div>
+                        <span>{`${pokemon1Hp}/${pokemon1["pokemonHp"]}`}</span>
                     </div>
-                    <span>{`${pokemon1Hp}/${pokemon1["pokemonHp"]}`}</span>
                 </div>
-            </div>}
+            }
 
             <br />
             <hr />
             <br />
 
+            {/* Display all 151 pokemon as an option */}
             <select className="selectBtn2" onChange={(e) => { changePokemon(e, 2) }}>
                 {POKEMONS.map((pokemonName) => {
-                    return <option key={pokemonName}>{pokemonName}</option>
+                    return <option key={uuidv4()}>{pokemonName}</option>
                 })}
             </select>
 
@@ -122,18 +129,38 @@ function App() {
 
             <button className="selectBtn2" onClick={() => { createPokemon(chosenPokemon2, 2) }}>Confirm</button>
 
-            {/* Does not render if pokemon1 is null */}
-            {pokemon2 && <div className="pokemon" id="pokemon2">
-                <h1>{pokemon2["pokemonName"]}</h1>
+            {/* Does not render if pokemon2 is null */}
+            {pokemon2 &&
+                <div className="pokemon" id="pokemon2">
+                    <h1>{pokemon2["pokemonName"]}</h1>
 
-                <div>
-                    HP
-                    <div className="hpBorder">
-                        <div className="hp" id="hp2" style={{ width: `${pokemon2Hp / pokemon2["pokemonHp"] * 100}%` }}></div>
+                    <div>
+                        HP
+                        <div className="hpBorder">
+                            <div className="hp" id="hp2" style={{ width: `${pokemon2Hp / pokemon2["pokemonHp"] * 100}%` }}></div>
+                        </div>
+                        <span>{`${pokemon2Hp}/${pokemon2["pokemonHp"]}`}</span>
                     </div>
-                    <span>{`${pokemon2Hp}/${pokemon2["pokemonHp"]}`}</span>
                 </div>
-            </div>}
+            }
+
+            {pokemon1 && pokemon2 &&
+                <div id="menu">
+                    <h2>Turn: {turn == 1 ? `Player 1 (${pokemon1["pokemonName"]})` : `Player 2 (${pokemon2["pokemonName"]})`}</h2>
+                    {/* Move of the poekemon is dipslayed depending on the turn */}
+                    {turn == 1 &&
+                        pokemon1["pokemonMoves"].map((move) => {
+                            return <button key={uuidv4()} className="moveBtn" onClick={() => { }}>{move}</button>
+                        })
+                    }
+
+                    {turn == 2 &&
+                        pokemon2["pokemonMoves"].map((move) => {
+                            return <button key={uuidv4()} className="moveBtn" onClick={() => { }}>{move}</button>
+                        })
+                    }
+                </div>
+            }
         </>
     );
 }
