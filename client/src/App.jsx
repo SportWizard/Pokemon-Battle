@@ -11,9 +11,9 @@ const POKEMONS = [
     "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
     "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata",
     "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu",
-    "Sandshrew", "Sandslash", "Nidoran♀", "Nidorina", "Nidoqueen", "Nidoran♂",
-    "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales",
-    "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume",
+    "Sandshrew", "Sandslash", "Nidorina", "Nidoqueen", "Nidorino", "Nidoking",
+    "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff",
+    "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume",
     "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth",
     "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine",
     "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop",
@@ -27,8 +27,6 @@ const POKEMONS = [
     "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electrode", "Voltorb", "Mewtwo", "Mew"
 ];
 
-let turn = 1;
-
 function App() {
     // Dynamic variables that changes over time
     const [chosenPokemon1, setChosenPokemon1] = useState(POKEMONS[0]);
@@ -39,6 +37,8 @@ function App() {
 
     const [pokemon1Hp, setPokemon1HP] = useState(0);
     const [pokemon2Hp, setPokemon2HP] = useState(0);
+
+    const [turn, setTurn] = useState(1);
 
     const changePokemon = (event, player) => {
         if (player != 1 && player != 2) {
@@ -59,22 +59,24 @@ function App() {
         }
 
         try {
-            // Wait for respond before proceeding
+            // Wait for reponse before proceeding
             const res = await axios.get(`${URL}/pokemon?player=${player}&name=${pokemonName}`);
 
             // No need to check status code. Axios already handles it
 
+            const resData = res.data;
+
             if (player == 1) {
-                setPokemon1(res.data);
-                setPokemon1HP(res.data["pokemonHp"]);
+                setPokemon1(resData);
+                setPokemon1HP(resData["pokemonHp"]);
 
                 // Remove selector and button
                 for (const element of document.getElementsByClassName("selectBtn1"))
                     element.style.display = "none";
             }
             else {
-                setPokemon2(res.data);
-                setPokemon2HP(res.data["pokemonHp"]);
+                setPokemon2(resData);
+                setPokemon2HP(resData["pokemonHp"]);
 
                 // Remove selector and button
                 for (const element of document.getElementsByClassName("selectBtn2"))
@@ -85,6 +87,27 @@ function App() {
             console.error("Error:", err);
         }
     };
+
+    const attack = async (moveName) => {
+        try {
+            // Wait for resopnse before proceeding
+            const res = await axios.get(`${URL}/attack?player=${turn}&name=${moveName}`);
+
+            // No need to check status code. Axios already handles it
+
+            const dmg = res.data["damange"];
+
+            if (turn == 1)
+                setPokemon2HP((pokemon2Hp - dmg) > 0 ? pokemon2Hp - dmg : 0);
+            else
+                setPokemon1HP((pokemon1Hp - dmg) > 0 ? pokemon1Hp - dmg : 0);
+
+            setTurn((turn % 2) + 1);
+        }
+        catch (err) {
+            console.error("Error:", err);
+        }
+    }
 
     return (
         <>
@@ -150,13 +173,13 @@ function App() {
                     {/* Move of the poekemon is dipslayed depending on the turn */}
                     {turn == 1 &&
                         pokemon1["pokemonMoves"].map((move) => {
-                            return <button key={uuidv4()} className="moveBtn" onClick={() => { }}>{move}</button>
+                            return <button key={uuidv4()} className="moveBtn" onClick={() => { attack(move) }}>{move}</button>
                         })
                     }
 
                     {turn == 2 &&
                         pokemon2["pokemonMoves"].map((move) => {
-                            return <button key={uuidv4()} className="moveBtn" onClick={() => { }}>{move}</button>
+                            return <button key={uuidv4()} className="moveBtn" onClick={() => { attack(move) }}>{move}</button>
                         })
                     }
                 </div>
