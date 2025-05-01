@@ -40,6 +40,8 @@ function App() {
 
     const [turn, setTurn] = useState(1);
 
+    const [gameOver, setGameOver] = useState(false);
+
     const changePokemon = (event, player) => {
         if (player != 1 && player != 2) {
             console.error("Player can only be 1 or 2");
@@ -69,18 +71,10 @@ function App() {
             if (player == 1) {
                 setPokemon1(resData);
                 setPokemon1HP(resData["pokemonHp"]);
-
-                // Remove selector and button
-                for (const element of document.getElementsByClassName("selectBtn1"))
-                    element.style.display = "none";
             }
             else {
                 setPokemon2(resData);
                 setPokemon2HP(resData["pokemonHp"]);
-
-                // Remove selector and button
-                for (const element of document.getElementsByClassName("selectBtn2"))
-                    element.style.display = "none";
             }
         }
         catch (err) {
@@ -97,10 +91,22 @@ function App() {
 
             const dmg = res.data["damange"];
 
-            if (turn == 1)
-                setPokemon2HP((pokemon2Hp - dmg) > 0 ? pokemon2Hp - dmg : 0);
-            else
-                setPokemon1HP((pokemon1Hp - dmg) > 0 ? pokemon1Hp - dmg : 0);
+            if (turn == 1) {
+                if (pokemon2Hp - dmg > 0)
+                    setPokemon2HP(pokemon2Hp - dmg);
+                else {
+                    setPokemon2HP(0);
+                    setGameOver(true);
+                }
+            }
+            else {
+                if (pokemon1Hp - dmg > 0)
+                    setPokemon1HP(pokemon1Hp - dmg);
+                else {
+                    setPokemon1HP(0);
+                    setGameOver(true);
+                }
+            }
 
             setTurn((turn % 2) + 1);
         }
@@ -109,18 +115,38 @@ function App() {
         }
     }
 
+    const restart = () => {
+        setChosenPokemon1(POKEMONS[0]);
+        setChosenPokemon2(POKEMONS[0]);
+
+
+        setPokemon1(null);
+        setPokemon2(null);
+
+        setPokemon1HP(0);
+        setPokemon2HP(0);
+
+        setTurn(1);
+
+        setGameOver(false);
+    }
+
     return (
         <>
             {/* Display all 151 pokemon as an option */}
-            <select className="selectBtn1" onChange={(e) => { changePokemon(e, 1) }}>
-                {POKEMONS.map((pokemonName) => {
-                    return <option key={uuidv4()}>{pokemonName}</option>
-                })}
-            </select>
+            {pokemon1 == null && pokemon2 == null &&
+                <div>
+                    <select className="selectBtn1" value={chosenPokemon1} onChange={(e) => { changePokemon(e, 1) }}>
+                        {POKEMONS.map((pokemonName) => {
+                            return <option key={uuidv4()}>{pokemonName}</option>
+                        })}
+                    </select>
 
-            <br />
+                    <br />
 
-            <button className="selectBtn1" onClick={() => { createPokemon(chosenPokemon1, 1) }}>Confirm</button>
+                    <button className="selectBtn1" onClick={() => { createPokemon(chosenPokemon1, 1) }}>Confirm</button>
+                </div>
+            }
 
             {/* Does not render if pokemon1 is null */}
             {pokemon1 &&
@@ -142,7 +168,7 @@ function App() {
             <br />
 
             {/* Display all 151 pokemon as an option */}
-            <select className="selectBtn2" onChange={(e) => { changePokemon(e, 2) }}>
+            <select className="selectBtn2" value={chosenPokemon2} onChange={(e) => { changePokemon(e, 2) }}>
                 {POKEMONS.map((pokemonName) => {
                     return <option key={uuidv4()}>{pokemonName}</option>
                 })}
@@ -167,7 +193,7 @@ function App() {
                 </div>
             }
 
-            {pokemon1 && pokemon2 &&
+            {pokemon1 && pokemon2 && !gameOver &&
                 <div id="menu">
                     <h2>Turn: {turn == 1 ? `Player 1 (${pokemon1["pokemonName"]})` : `Player 2 (${pokemon2["pokemonName"]})`}</h2>
                     {/* Move of the poekemon is dipslayed depending on the turn */}
@@ -182,6 +208,13 @@ function App() {
                             return <button key={uuidv4()} className="moveBtn" onClick={() => { attack(move) }}>{move}</button>
                         })
                     }
+                </div>
+            }
+
+            {gameOver &&
+                <div id="gameOver">
+                    <h1>Game Over</h1>
+                    <button onClick={() => { restart() }}>Restart</button>
                 </div>
             }
         </>
