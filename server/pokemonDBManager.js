@@ -20,7 +20,7 @@ export default class PokemonDBManager {
         if (PokemonDBManager.#instance === null)
             PokemonDBManager.#instance = new PokemonDBManager()
 
-        return this.#instance;
+        return PokemonDBManager.#instance;
     }
 
     /**
@@ -46,7 +46,7 @@ export default class PokemonDBManager {
                 throw err;
 
             console.log("Disconnected from database");
-        })
+        });
     }
 
     /**
