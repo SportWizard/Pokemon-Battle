@@ -28,10 +28,11 @@ export default class PokemonDBManager {
      */
     connect() {
         this.#connection = mysql.createConnection({
-            host: "localhost",
+            host: process.env.HOST,
             user: process.env.USERNAME,
             password: process.env.PASSWORD,
-            database: "pokemon_data"
+            database: "pokemon_data",
+            port: process.env.PORT
         });
 
         console.log("Connected to database");
