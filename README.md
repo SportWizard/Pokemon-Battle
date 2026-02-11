@@ -7,6 +7,6 @@ This project is a full-stack web application (mostly backend focused) that somew
 - Select move
 
 # Tech full-stack
-**Frontend:** REACT
-**Backend:** Node.js, Express.js
+**Frontend:** REACT \
+**Backend:** Node.js, Express.js \
 **Database:** MySQL
