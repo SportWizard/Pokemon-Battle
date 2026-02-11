@@ -132,7 +132,7 @@ function App() {
     return (
         <>
             {/* Display all 151 pokemon as an option */}
-            {pokemon1 == null && pokemon2 == null &&
+            {pokemon1 == null &&
                 <div>
                     <select className="selectBtn1" value={chosenPokemon1} onChange={(e) => { changePokemon(e, 1) }}>
                         {POKEMONS.map((pokemonName) => {
@@ -166,15 +166,19 @@ function App() {
             <br />
 
             {/* Display all 151 pokemon as an option */}
-            <select className="selectBtn2" value={chosenPokemon2} onChange={(e) => { changePokemon(e, 2) }}>
-                {POKEMONS.map((pokemonName) => {
-                    return <option key={uuidv4()}>{pokemonName}</option>
-                })}
-            </select>
+            {pokemon2 == null &&
+              <div>
+                  <select className="selectBtn2" value={chosenPokemon2} onChange={(e) => { changePokemon(e, 2) }}>
+                      {POKEMONS.map((pokemonName) => {
+                          return <option key={uuidv4()}>{pokemonName}</option>
+                      })}
+                  </select>
 
-            <br />
+                  <br />
 
-            <button className="selectBtn2" onClick={() => { createPokemon(chosenPokemon2, 2) }}>Confirm</button>
+                  <button className="selectBtn2" onClick={() => { createPokemon(chosenPokemon2, 2) }}>Confirm</button>
+              </div>
+            }
 
             {/* Does not render if pokemon2 is null */}
             {pokemon2 &&
