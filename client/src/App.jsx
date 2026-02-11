@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-
 import axios from "axios";
-
 import "./App.css";
 
-const URL = "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_URL;
 const POKEMONS = [
     "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
     "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
@@ -62,7 +60,7 @@ function App() {
 
         try {
             // Wait for reponse before proceeding
-            const res = await axios.get(`${URL}/pokemon?player=${player}&name=${pokemonName}`);
+            const res = await axios.get(`${API_URL}/pokemon?player=${player}&name=${pokemonName}`);
 
             // No need to check status code. Axios already handles it
 
@@ -85,7 +83,7 @@ function App() {
     const attack = async (moveName) => {
         try {
             // Wait for resopnse before proceeding
-            const res = await axios.get(`${URL}/attack?player=${turn}&name=${moveName}`);
+            const res = await axios.get(`${API_URL}/attack?player=${turn}&name=${moveName}`);
 
             // No need to check status code. Axios already handles it
 
